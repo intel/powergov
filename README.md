@@ -1,7 +1,7 @@
-Intel(r) Power Governor    {#mainpage}
+Power Governor    {#mainpage}
 =======================
 
-Intel(r) Power Governor is a software utility and library, which allows developers 
+Power Governor is a software utility and library, which allows developers 
 to (a) monitor power and (b) regulate power, at very fine time granularities 
 (few tens of milliseconds). Power monitoring/control is available for the 
 following power domains: 
@@ -40,7 +40,7 @@ To generate the doxygen documentation:
 Using the library
 -----------------------------------
 
-Intel(r) Power Governor library allows developers to design dynamic power management
+Power Governor library allows developers to design dynamic power management
 solutions, which optimize the power consumption of their machines in accordance 
 with their performance or quality of service needs. 
 To get started using the library, see the short example below. 
