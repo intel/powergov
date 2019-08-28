@@ -205,6 +205,7 @@ init_rapl()
         msr_support_table[MSR_RAPL_PP1_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
         msr_support_table[MSR_RAPL_PP1_POLICY & MSR_SUPPORT_MASK]          = 1;
         break;
+	case 0x50657:        /* CascadeLake server*/
     case 0x206d6:        /* SandyBridge server*/
     case 0x206d7:        /* SandyBridge server*/
     case 0x306e4:	     /* IvyBridge server*/
