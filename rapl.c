@@ -186,6 +186,7 @@ init_rapl()
     msr_support_table = (unsigned char*) calloc(MSR_SUPPORT_MASK, sizeof(unsigned char));
 
     switch (processor_signature) {
+	case 0x706e5:                /* Icelake client*/
     case 0x206a7:                /* SandyBridge client*/
         msr_support_table[MSR_RAPL_POWER_UNIT & MSR_SUPPORT_MASK]          = 1;
         msr_support_table[MSR_RAPL_PKG_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
