@@ -186,53 +186,55 @@ init_rapl()
     msr_support_table = (unsigned char*) calloc(MSR_SUPPORT_MASK, sizeof(unsigned char));
 
     switch (processor_signature) {
-	case 0x706e5:                /* Icelake client*/
-    case 0x206a7:                /* SandyBridge client*/
-        msr_support_table[MSR_RAPL_POWER_UNIT & MSR_SUPPORT_MASK]          = 1;
-        msr_support_table[MSR_RAPL_PKG_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PKG_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
-        msr_support_table[MSR_RAPL_PKG_PERF_STATUS & MSR_SUPPORT_MASK]     = 0;
-        msr_support_table[MSR_RAPL_PKG_POWER_INFO & MSR_SUPPORT_MASK]      = 1;
-        msr_support_table[MSR_RAPL_DRAM_POWER_LIMIT & MSR_SUPPORT_MASK]    = 0;
-        msr_support_table[MSR_RAPL_DRAM_ENERGY_STATUS & MSR_SUPPORT_MASK]  = 0;
-        msr_support_table[MSR_RAPL_DRAM_PERF_STATUS & MSR_SUPPORT_MASK]    = 0;
-        msr_support_table[MSR_RAPL_DRAM_POWER_INFO & MSR_SUPPORT_MASK]     = 0;
-        msr_support_table[MSR_RAPL_PP0_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PP0_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
-        msr_support_table[MSR_RAPL_PP0_POLICY & MSR_SUPPORT_MASK]          = 1;
-        msr_support_table[MSR_RAPL_PP0_PERF_STATUS & MSR_SUPPORT_MASK]     = 0;
-        msr_support_table[MSR_RAPL_PP1_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PP1_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
-        msr_support_table[MSR_RAPL_PP1_POLICY & MSR_SUPPORT_MASK]          = 1;
-        break;
-	case 0x50657:        /* CascadeLake server*/
-    case 0x206d6:        /* SandyBridge server*/
-    case 0x206d7:        /* SandyBridge server*/
-    case 0x306e4:	     /* IvyBridge server*/
-    case 0x306f2:		 /* Haswell server*/
-    case 0x406f1:		 /* Broadwell server*/
-    case 0x50653:		 /* Skylake server*/
-    case 0x50654:		 /* Cascade lake server */
-        msr_support_table[MSR_RAPL_POWER_UNIT & MSR_SUPPORT_MASK]          = 1;
-        msr_support_table[MSR_RAPL_PKG_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PKG_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
-        msr_support_table[MSR_RAPL_PKG_PERF_STATUS & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PKG_POWER_INFO & MSR_SUPPORT_MASK]      = 1;
-        msr_support_table[MSR_RAPL_DRAM_POWER_LIMIT & MSR_SUPPORT_MASK]    = 1;
-        msr_support_table[MSR_RAPL_DRAM_ENERGY_STATUS & MSR_SUPPORT_MASK]  = 1;
-        msr_support_table[MSR_RAPL_DRAM_PERF_STATUS & MSR_SUPPORT_MASK]    = 1;
-        msr_support_table[MSR_RAPL_DRAM_POWER_INFO & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PP0_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PP0_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
-        msr_support_table[MSR_RAPL_PP0_POLICY & MSR_SUPPORT_MASK]          = 0;
-        msr_support_table[MSR_RAPL_PP0_PERF_STATUS & MSR_SUPPORT_MASK]     = 1;
-        msr_support_table[MSR_RAPL_PP1_POWER_LIMIT & MSR_SUPPORT_MASK]     = 0;
-        msr_support_table[MSR_RAPL_PP1_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 0;
-        msr_support_table[MSR_RAPL_PP1_POLICY & MSR_SUPPORT_MASK]          = 0;
-        break;
-    default:
-        fprintf(stderr, "RAPL not supported, or machine model (%x) not recognized.\n", processor_signature);
-        return MY_ERROR;
+	    case 0x706e5:                /* Icelake client*/
+	        msr_support_table[MSR_PLATFORM_ENERGY_COUNTER & MSR_SUPPORT_MASK]  = 1;  
+	        msr_support_table[MSR_PLATFORM_POWER_LIMIT & MSR_SUPPORT_MASK]  = 1;
+    	case 0x206a7:                /* SandyBridge client*/
+            msr_support_table[MSR_RAPL_POWER_UNIT & MSR_SUPPORT_MASK]          = 1;
+            msr_support_table[MSR_RAPL_PKG_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PKG_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
+            msr_support_table[MSR_RAPL_PKG_PERF_STATUS & MSR_SUPPORT_MASK]     = 0;
+            msr_support_table[MSR_RAPL_PKG_POWER_INFO & MSR_SUPPORT_MASK]      = 1;
+            msr_support_table[MSR_RAPL_DRAM_POWER_LIMIT & MSR_SUPPORT_MASK]    = 0;
+            msr_support_table[MSR_RAPL_DRAM_ENERGY_STATUS & MSR_SUPPORT_MASK]  = 0;
+            msr_support_table[MSR_RAPL_DRAM_PERF_STATUS & MSR_SUPPORT_MASK]    = 0;
+            msr_support_table[MSR_RAPL_DRAM_POWER_INFO & MSR_SUPPORT_MASK]     = 0;
+            msr_support_table[MSR_RAPL_PP0_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PP0_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
+            msr_support_table[MSR_RAPL_PP0_POLICY & MSR_SUPPORT_MASK]          = 1;
+            msr_support_table[MSR_RAPL_PP0_PERF_STATUS & MSR_SUPPORT_MASK]     = 0;
+            msr_support_table[MSR_RAPL_PP1_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PP1_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
+            msr_support_table[MSR_RAPL_PP1_POLICY & MSR_SUPPORT_MASK]          = 1;
+            break;
+	    case 0x50657:        /* CascadeLake server*/
+    	case 0x206d6:        /* SandyBridge server*/
+    	case 0x206d7:        /* SandyBridge server*/
+    	case 0x306e4:	     /* IvyBridge server*/
+    	case 0x306f2:		 /* Haswell server*/
+    	case 0x406f1:		 /* Broadwell server*/
+    	case 0x50653:		 /* Skylake server*/
+    	case 0x50654:		 /* Cascade lake server */
+            msr_support_table[MSR_RAPL_POWER_UNIT & MSR_SUPPORT_MASK]          = 1;
+            msr_support_table[MSR_RAPL_PKG_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PKG_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
+            msr_support_table[MSR_RAPL_PKG_PERF_STATUS & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PKG_POWER_INFO & MSR_SUPPORT_MASK]      = 1;
+            msr_support_table[MSR_RAPL_DRAM_POWER_LIMIT & MSR_SUPPORT_MASK]    = 1;
+            msr_support_table[MSR_RAPL_DRAM_ENERGY_STATUS & MSR_SUPPORT_MASK]  = 1;
+            msr_support_table[MSR_RAPL_DRAM_PERF_STATUS & MSR_SUPPORT_MASK]    = 1;
+            msr_support_table[MSR_RAPL_DRAM_POWER_INFO & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PP0_POWER_LIMIT & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PP0_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 1;
+            msr_support_table[MSR_RAPL_PP0_POLICY & MSR_SUPPORT_MASK]          = 0;
+            msr_support_table[MSR_RAPL_PP0_PERF_STATUS & MSR_SUPPORT_MASK]     = 1;
+            msr_support_table[MSR_RAPL_PP1_POWER_LIMIT & MSR_SUPPORT_MASK]     = 0;
+            msr_support_table[MSR_RAPL_PP1_ENERGY_STATUS & MSR_SUPPORT_MASK]   = 0;
+            msr_support_table[MSR_RAPL_PP1_POLICY & MSR_SUPPORT_MASK]          = 0;
+            break;
+        default:
+            fprintf(stderr, "RAPL not supported, or machine model (%x) not recognized.\n", processor_signature);
+            return MY_ERROR;
     }
 
     err = read_rapl_units();
@@ -289,8 +291,22 @@ unsigned int
 is_supported_domain(unsigned int power_domain)
 {
     unsigned int supported = 0;
+    uint64_t msr;
 
     switch (power_domain) {
+    case RAPL_PLF: 
+	    supported = is_supported_msr(MSR_PLATFORM_ENERGY_COUNTER);
+        
+        // Support for this MSR is BIOS and platform dependent. If 0, then not supported. 
+        if(supported)
+        { 
+            read_msr(0, MSR_PLATFORM_ENERGY_COUNTER, &msr);
+            if(0 == msr) 
+            {
+                supported = 0; 
+            }
+        } 
+        break; 
     case RAPL_PKG:
         supported = is_supported_msr(MSR_RAPL_PKG_POWER_LIMIT);
         break;
@@ -693,6 +709,32 @@ set_balance_policy(unsigned int cpu,
 
 
 /* Interface */
+
+/* Platform */
+
+/*!
+ * \brief Get a pointer to the Platform energy consumed register.
+ *
+ * This read-only register provides energy consumed in joules
+ * by all devices in the platform that receive power from integrated power delivery
+ * mechanism, included platform devices are processor cores, SOC, memory, add-on or peripheral devices that
+ * get powered directly from the platform power delivery means. The energy units are specified in the
+ * MSR_RAPL_POWER_UNIT.Enery_Status_Unit.
+ *
+ * SDM-vol4 2-272
+ *
+ * \return 0 on success, -1 otherwise
+ */
+int
+get_platform_total_energy_consumed(unsigned int  node,
+                              double       *total_energy_consumed_joules)
+{
+    unsigned int cpu = pkg_node_to_cpu(node);
+    return get_total_energy_consumed(cpu, MSR_PLATFORM_ENERGY_COUNTER, total_energy_consumed_joules);
+}
+
+
+
 
 /* PKG */
 

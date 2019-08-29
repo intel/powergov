@@ -594,6 +594,9 @@ do_print_energy_info()
 
     /* Print header */
     fprintf(stdout, "Node");
+    if(is_supported_domain(RAPL_PLF)) {
+        fprintf(stdout, ",PLATFORM");
+    }
     if(is_supported_domain(RAPL_PKG)) {
         fprintf(stdout, ",PKG");
     }
@@ -664,6 +667,8 @@ usage()
     fprintf(stdout, "\t CLAMPING_LIMIT (bool, e.g. 0, set to enable going below OS requested frequency)\n");
     fprintf(stdout, "\t TIME_WINDOW (seconds, e.g. 0.5)\n");
     fprintf(stdout, "\n\t The available power domains on this system are:\n");
+    if(is_supported_domain(RAPL_PLF))
+        fprintf(stdout, "\t PLATFORM (platform power domain)\n");
     if(is_supported_domain(RAPL_PKG))
         fprintf(stdout, "\t PKG (package power domain)\n");
     if(is_supported_domain(RAPL_PP0))
@@ -706,28 +711,32 @@ menu_select_power_domain()
     unsigned int    power_domain;
 menu_1:
     fprintf(stdout, "Please select a power domain:\n");
-    fprintf(stdout, "\t1: PKG - Processor package domain\n");
-    fprintf(stdout, "\t2: PP0 - Processor core domain\n");
-    fprintf(stdout, "\t3: PP1 - Processor uncore domain (client only)\n");
-    fprintf(stdout, "\t4: DRAM - Memory domain (server only)\n");
-    fprintf(stdout, "\t5: Exit\n");
+    fprintf(stdout, "\t1: PLATFORM - Platform domain\n");
+    fprintf(stdout, "\t2: PKG - Processor package domain\n");
+    fprintf(stdout, "\t3: PP0 - Processor core domain\n");
+    fprintf(stdout, "\t4: PP1 - Processor uncore domain (client only)\n");
+    fprintf(stdout, "\t5: DRAM - Memory domain (server only)\n");
+    fprintf(stdout, "\t6: Exit\n");
 
     scanf("%d", &ch);
 
     switch (ch) {
     case 1:
-        power_domain = RAPL_PKG;
+        power_domain = RAPL_PLF;
         break;
     case 2:
-        power_domain = RAPL_PP0;
+        power_domain = RAPL_PKG;
         break;
     case 3:
-        power_domain = RAPL_PP1;
+        power_domain = RAPL_PP0;
         break;
     case 4:
-        power_domain = RAPL_DRAM;
+        power_domain = RAPL_PP1;
         break;
     case 5:
+        power_domain = RAPL_DRAM;
+        break;
+    case 6:
         _exit(0);
     default:
         fprintf(stdout, "%d is an invalid option!\n", ch);
