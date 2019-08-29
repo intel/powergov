@@ -139,7 +139,7 @@ build_topology() {
     unsigned int num_pkg_threads = 0;  // number of physical threads per package
     unsigned int num_pkg_cores = 0;  // number of cores per package
     
-    os_cpu_count = sysconf(_SC_NPROCESSORS_CONF);
+    os_cpu_count = sysconf(_SC_NPROCESSORS_ONLN);
 
     // Construct an os map: os_map[APIC_ID ... APIC_ID]
     os_map = (APIC_ID_t *) malloc(os_cpu_count * sizeof(APIC_ID_t));
