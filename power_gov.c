@@ -529,6 +529,13 @@ do_print_info(unsigned int power_domain, unsigned int node)
 
     if(is_supported_domain(power_domain)) {
         switch (power_domain) {
+        case RAPL_PLF:
+            fprintf(stdout, "----------------------------------------\n");
+            fprintf(stdout, "Work in progress\n");
+            fprintf(stdout, "----------------------------------------\n");
+            fprintf(stdout, "\n");
+            break;
+
         case RAPL_PKG:
             assert(MY_ERROR != print_pkg_rapl_parameters(node));
             assert(MY_ERROR != print_pkg_rapl_power_limit_control(node));
@@ -1019,7 +1026,9 @@ main(int argc, char **argv)
     unsigned int power_domain = RAPL_PKG;
 
     if(NULL != dvalue) {
-        if (strcmp(dvalue, "PKG") == 0)
+        if (strcmp(dvalue, "PLATFORM") == 0) 
+            power_domain = RAPL_PLF;
+	else if (strcmp(dvalue, "PKG") == 0)
             power_domain = RAPL_PKG;
         else if (strcmp(dvalue, "PP0") == 0)
             power_domain = RAPL_PP0;
