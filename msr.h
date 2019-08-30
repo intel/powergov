@@ -117,6 +117,21 @@ typedef struct rapl_unit_multiplier_msr_t {
     unsigned int        : 12;
 } rapl_unit_multiplier_msr_t;
 
+/* PLATFORM */ 
+typedef struct platform_power_limit_control_msr_t {
+    unsigned int power_limit_1         : 15;
+    unsigned int limit_enabled_1       : 1;
+    unsigned int clamp_enabled_1       : 1;
+    unsigned int limit_time_window_y_1 : 5;
+    unsigned int limit_time_window_f_1 : 2;
+    unsigned int                       : 8;
+    unsigned int power_limit_2         : 15;
+    unsigned int limit_enabled_2       : 1;
+    unsigned int clamp_enabled_2       : 1;
+    unsigned int                       : 14;
+    unsigned int lock_enabled          : 1;
+} platform_power_limit_control_msr_t;
+
 /* PKG */
 typedef struct pkg_rapl_power_limit_control_msr_t {
     unsigned int power_limit_1         : 15;

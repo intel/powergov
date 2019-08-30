@@ -27,7 +27,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #define RAPL_PP0  1      /*!< \brief Core power domain */
 #define RAPL_PP1  2      /*!< \brief Uncore power domain */
 #define RAPL_DRAM 3      /*!< \brief DRAM power domain */
-#define RAPL_PLF 4      /*!< \brief Platform power domain */
+#define PLATFORM 4      /*!< \brief Platform power domain */
 #define RAPL_NR_DOMAIN 5 /*!< \brief Number of power domains */
 
 enum RAPL_DOMAIN { PKG, PP0, PP1, DRAM, PLF };
@@ -57,7 +57,7 @@ unsigned int  is_supported_domain(unsigned int power_domain);
 
 /* General */
 
-/*! \brief Platform power limit control structure, Plaform domain */
+/*! \brief Platform power limit control structure, PLATFORM domain */
 typedef struct platform_power_limit_control_t {
     double       power_limit_watts_1;
     double       limit_time_window_seconds_1;
@@ -70,8 +70,9 @@ typedef struct platform_power_limit_control_t {
     unsigned int lock_enabled;
 } platform_power_limit_control_t;
 
-//int get_platform_power_limit_control_t(unsigned int node, platform_power_limit_control_t *platform_power_limit_control);
 int get_platform_total_energy_consumed(unsigned int node, double *total_energy_consumed);
+int get_platform_power_limit_control_t(unsigned int node, platform_power_limit_control_t *platform_power_limit_control);
+int set_platform_power_limit_control_t(unsigned int node, platform_power_limit_control_t *platform_power_limit_control);
 
 /*! \brief RAPL power limit control structure, PKG domain */
 typedef struct pkg_rapl_power_limit_control_t {
