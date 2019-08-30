@@ -36,6 +36,33 @@ unsigned int  delay_us = 0;
 double        delay_unit = 1000000.0;
 
 int
+print_platform_power_limit_control(unsigned int node)
+{
+    int                            err = 0;
+    platform_power_limit_control_t plf_plc;
+
+    err = get_platform_power_limit_control(node, &plf_plc);
+    if (!err) {
+        fprintf(stdout, "+--------------------------------------+\n");
+        fprintf(stdout, "| %-26s %7s %u |\n", "PLATFORM POWER LIMITS", "NODE", node);
+        fprintf(stdout, "+--------------------------------------+\n");
+        fprintf(stdout, "%-30s %8.0lfW\n", "POWER_LIMIT:", plf_plc.power_limit_watts_1);
+        fprintf(stdout, "%-30s %9u\n", "ENABLE_POWER_LIMIT:", plf_plc.limit_enabled_1);
+        fprintf(stdout, "%-30s %9u\n", "CLAMPING_LIMIT:", plf_plc.clamp_enabled_1);
+        fprintf(stdout, "%-30s %8.6lfs\n", "TIME_WINDOW:", plf_plc.limit_time_window_seconds_1);
+        fprintf(stdout, "%-30s %9u\n", "LOCK:", plf_plc.lock_enabled);
+        fprintf(stdout, "%-30s %8.0lfW\n", "POWER_LIMIT_2:", plf_plc.power_limit_watts_2);
+        fprintf(stdout, "%-30s %9u\n", "ENABLE_POWER_LIMIT_2:", plf_plc.limit_enabled_2);
+        fprintf(stdout, "%-30s %9u\n", "CLAMPING_LIMIT_2:", plf_plc.clamp_enabled_2);
+        if (plf_plc.lock_enabled) {
+            fprintf(stdout, "The RAPL_LOCK must be disabled in BIOS\n");
+        }
+    }
+
+    return err;
+}
+
+int
 print_pkg_rapl_power_limit_control(unsigned int node)
 {
     int                            err = 0;
@@ -142,6 +169,9 @@ print_rapl_power_limit_control(unsigned int power_domain,
     int err = 0;
 
     switch (power_domain) {
+    case PLF: 
+        err = print_platform_power_limit_control(node);
+        break;
     case PKG:
         err = print_pkg_rapl_power_limit_control(node);
         break;
@@ -241,12 +271,24 @@ write_rapl_power_limit_control(unsigned int power_domain,
                                unsigned int lock_enabled)
 {
     int                             err = 0;
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
     dram_rapl_power_limit_control_t dram_plc;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_power_limit_control(node, &plf_plc);
+        if (!err) {
+            plf_plc.power_limit_watts_1 = power_limit_watts;
+            plf_plc.limit_time_window_seconds_1 = limit_time_window_seconds;
+            plf_plc.limit_enabled_1 = limit_enabled;
+            plf_plc.clamp_enabled_1 = clamp_enabled;
+            plf_plc.lock_enabled = lock_enabled;
+            err = set_platform_power_limit_control(node, &plf_plc);
+        }
+        break;
     case PKG:
         err = get_pkg_rapl_power_limit_control(node, &pkg_plc);
         if (!err) {
@@ -305,12 +347,20 @@ write_rapl_power_limit_limit(unsigned int power_domain,
                              double       power_limit_watts)
 {
     int                             err = 0;
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
     dram_rapl_power_limit_control_t dram_plc;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_power_limit_control(node, &plf_plc);
+        if (!err) {
+            plf_plc.power_limit_watts_1 = power_limit_watts;
+            err = set_platform_power_limit_control(node, &plf_plc);
+        }
+        break;
     case PKG:
         err = get_pkg_rapl_power_limit_control(node, &pkg_plc);
         if (!err) {
@@ -353,12 +403,20 @@ write_rapl_power_limit_enable(unsigned int power_domain,
                               unsigned int limit_enabled)
 {
     int                             err = 0;
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
     dram_rapl_power_limit_control_t dram_plc;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_power_limit_control(node, &plf_plc);
+        if (!err) {
+            plf_plc.limit_enabled_1 = limit_enabled;
+            err = set_platform_power_limit_control(node, &plf_plc);
+        }
+        break;
     case PKG:
         err = get_pkg_rapl_power_limit_control(node, &pkg_plc);
         if (!err) {
@@ -401,12 +459,20 @@ write_rapl_power_limit_clamping(unsigned int power_domain,
                                 unsigned int clamp_enabled)
 {
     int                             err = 0;
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
     dram_rapl_power_limit_control_t dram_plc;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_power_limit_control(node, &plf_plc);
+        if (!err) {
+            plf_plc.clamp_enabled_1 = clamp_enabled;
+            err = set_platform_power_limit_control(node, &plf_plc);
+        }
+        break;
     case PKG:
         err = get_pkg_rapl_power_limit_control(node, &pkg_plc);
         if (!err) {
@@ -449,12 +515,20 @@ write_rapl_power_limit_time(unsigned int power_domain,
                             double       limit_time_window_seconds)
 {
     int                             err = 0;
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
     dram_rapl_power_limit_control_t dram_plc;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_power_limit_control(node, &plf_plc);
+        if (!err) {
+            plf_plc.limit_time_window_seconds_1 = limit_time_window_seconds;
+            err = set_platform_power_limit_control(node, &plf_plc);
+        }
+        break;
     case PKG:
         err = get_pkg_rapl_power_limit_control(node, &pkg_plc);
         if (!err) {
@@ -499,6 +573,9 @@ get_rapl_energy_info(unsigned int power_domain, unsigned int node)
     double       total_energy_consumed = 0.0;
 
     switch (power_domain) {
+    case PLF:
+        err = get_platform_total_energy_consumed(node, &total_energy_consumed);
+        break;
     case PKG:
         err = get_pkg_total_energy_consumed(node, &total_energy_consumed);
         break;
@@ -529,6 +606,12 @@ do_print_info(unsigned int power_domain, unsigned int node)
 
     if(is_supported_domain(power_domain)) {
         switch (power_domain) {
+        case PLATFORM:
+            assert(MY_ERROR != print_platform_power_limit_control(node));
+            fprintf(stdout, "----------------------------------------\n");
+            fprintf(stdout, "\n");
+            break;
+
         case RAPL_PKG:
             assert(MY_ERROR != print_pkg_rapl_parameters(node));
             assert(MY_ERROR != print_pkg_rapl_power_limit_control(node));
@@ -594,6 +677,9 @@ do_print_energy_info()
 
     /* Print header */
     fprintf(stdout, "Node");
+    if(is_supported_domain(PLATFORM)) {
+        fprintf(stdout, ",PLATFORM");
+    }
     if(is_supported_domain(RAPL_PKG)) {
         fprintf(stdout, ",PKG");
     }
@@ -664,6 +750,8 @@ usage()
     fprintf(stdout, "\t CLAMPING_LIMIT (bool, e.g. 0, set to enable going below OS requested frequency)\n");
     fprintf(stdout, "\t TIME_WINDOW (seconds, e.g. 0.5)\n");
     fprintf(stdout, "\n\t The available power domains on this system are:\n");
+    if(is_supported_domain(PLATFORM))
+        fprintf(stdout, "\t PLATFORM (platform power domain)\n");
     if(is_supported_domain(RAPL_PKG))
         fprintf(stdout, "\t PKG (package power domain)\n");
     if(is_supported_domain(RAPL_PP0))
@@ -706,28 +794,32 @@ menu_select_power_domain()
     unsigned int    power_domain;
 menu_1:
     fprintf(stdout, "Please select a power domain:\n");
-    fprintf(stdout, "\t1: PKG - Processor package domain\n");
-    fprintf(stdout, "\t2: PP0 - Processor core domain\n");
-    fprintf(stdout, "\t3: PP1 - Processor uncore domain (client only)\n");
-    fprintf(stdout, "\t4: DRAM - Memory domain (server only)\n");
-    fprintf(stdout, "\t5: Exit\n");
+    fprintf(stdout, "\t1: PLATFORM - Platform domain\n");
+    fprintf(stdout, "\t2: PKG - Processor package domain\n");
+    fprintf(stdout, "\t3: PP0 - Processor core domain\n");
+    fprintf(stdout, "\t4: PP1 - Processor uncore domain (client only)\n");
+    fprintf(stdout, "\t5: DRAM - Memory domain (server only)\n");
+    fprintf(stdout, "\t6: Exit\n");
 
     scanf("%d", &ch);
 
     switch (ch) {
     case 1:
-        power_domain = RAPL_PKG;
+        power_domain = PLATFORM;
         break;
     case 2:
-        power_domain = RAPL_PP0;
+        power_domain = RAPL_PKG;
         break;
     case 3:
-        power_domain = RAPL_PP1;
+        power_domain = RAPL_PP0;
         break;
     case 4:
-        power_domain = RAPL_DRAM;
+        power_domain = RAPL_PP1;
         break;
     case 5:
+        power_domain = RAPL_DRAM;
+        break;
+    case 6:
         _exit(0);
     default:
         fprintf(stdout, "%d is an invalid option!\n", ch);
@@ -768,6 +860,7 @@ interactive_mode_set_rapl()
     unsigned int clamping_limit;
     double       power_limit;
 
+    platform_power_limit_control_t  plf_plc;
     pkg_rapl_power_limit_control_t  pkg_plc;
     pp0_rapl_power_limit_control_t  pp0_plc;
     pp1_rapl_power_limit_control_t  pp1_plc;
@@ -796,6 +889,10 @@ menu_2:
     case 2:
         for (node = 0; node < num_node; node++) {
             switch (power_domain) {
+            case PLF:
+                assert(MY_ERROR != write_rapl_power_limit_enable(power_domain, node, 0));
+                assert(MY_ERROR != print_platform_power_limit_control(node));
+                break;
             case PKG:
                 assert(MY_ERROR != write_rapl_power_limit_enable(power_domain, node, 0));
                 assert(MY_ERROR != print_pkg_rapl_power_limit_control(node));
@@ -825,7 +922,7 @@ menu_2:
 //--------------------------------------------------------
 // Step 3: Select clamping limit
 //--------------------------------------------------------
-    if(RAPL_PKG == power_domain) {
+    if((RAPL_PKG == power_domain)||(PLATFORM == power_domain)) {
 menu_3:
         fprintf(stdout, "Please select to Enable of Disable RAPL clamping limit:\n");
         fprintf(stdout, "\t1: Enable clamping limit (full capability - overwrites OS settings)\n");
@@ -1010,7 +1107,9 @@ main(int argc, char **argv)
     unsigned int power_domain = RAPL_PKG;
 
     if(NULL != dvalue) {
-        if (strcmp(dvalue, "PKG") == 0)
+        if (strcmp(dvalue, "PLATFORM") == 0) 
+            power_domain = PLATFORM;
+	else if (strcmp(dvalue, "PKG") == 0)
             power_domain = RAPL_PKG;
         else if (strcmp(dvalue, "PP0") == 0)
             power_domain = RAPL_PP0;

@@ -26,6 +26,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /* General (Sandy Bridge Client/Server) */
 #define MSR_RAPL_POWER_UNIT 0x606 /* Unit Multiplier used in RAPL Interfaces (R/O) */
 
+/* Platform (Supported by 6th Generation Intel® Core™ Processors and the Intel® Xeon® Processor
+ * Scalable Family Based on Skylake Microarchitecture, 7th Generation Intel® Core™ Processors Based on Kaby Lake
+ * Microarchitecture, 8th Generation and 9th Generation Intel® Core™ Processors and Intel® Xeon® E Processors Based
+ * on Coffee Lake Microarchitecture, and 8th Generation Intel® Core™ i3 Processors Based on Cannon Lake
+ * Microarchitecture) 
+ * Platform Energy Counter (R/O). This MSR is valid only if both platform vendor hardware
+ * implementation and BIOS enablement support it. This MSR will read 0 if not valid.
+ *
+ * The notation of “Platform” in the Scope column (with respect to MSR_PLATFORM_ENERGY_COUNTER and
+ * MSR_PLATFORM_POWER_LIMIT) is limited to the power-delivery domain and the specifics of the power delivery
+ * integration may vary by platform vendor’s implementation.
+ */
+#define MSR_PLATFORM_ENERGY_COUNTER 0x64d /* Platform Energy Status (R/O) */ 
+#define MSR_PLATFORM_POWER_LIMIT 0x65c /* Platform Power Limit Control (R/W) */ 
+
 /* PKG (Sandy Bridge Client/Server) */
 #define MSR_RAPL_PKG_POWER_LIMIT   0x610 /* PKG RAPL Power Limit Control (R/W) */
 #define MSR_RAPL_PKG_ENERGY_STATUS 0x611 /* PKG Energy Status (R/O) */
@@ -101,6 +116,21 @@ typedef struct rapl_unit_multiplier_msr_t {
     unsigned int        : 32;
     unsigned int        : 12;
 } rapl_unit_multiplier_msr_t;
+
+/* PLATFORM */ 
+typedef struct platform_power_limit_control_msr_t {
+    unsigned int power_limit_1         : 15;
+    unsigned int limit_enabled_1       : 1;
+    unsigned int clamp_enabled_1       : 1;
+    unsigned int limit_time_window_y_1 : 5;
+    unsigned int limit_time_window_f_1 : 2;
+    unsigned int                       : 8;
+    unsigned int power_limit_2         : 15;
+    unsigned int limit_enabled_2       : 1;
+    unsigned int clamp_enabled_2       : 1;
+    unsigned int                       : 14;
+    unsigned int lock_enabled          : 1;
+} platform_power_limit_control_msr_t;
 
 /* PKG */
 typedef struct pkg_rapl_power_limit_control_msr_t {
