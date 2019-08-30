@@ -719,7 +719,7 @@ do_print_energy_info()
                     }
                     prev_sample[i][domain] = new_sample;
                     power = delta / ((double) delay_us / delay_unit);
-                    fprintf(stdout, ",%.0lf",power);
+                    fprintf(stdout, ",%.2lf",power);
                 }
             }
             fprintf(stdout, "\n");
